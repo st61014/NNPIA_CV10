@@ -15,4 +15,8 @@ public class TaskService {
     public List<Task> findAllByAuthorId(final Long authorId) {
         return taskRepository.findAllByAuthorId(authorId);
     }
+
+    public Iterable<Task> findAll() {
+        return taskRepository.findAll();
+    }
 }
