@@ -1,12 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {RootState} from "../store";
 
 export interface LoginState {
     value: boolean
 }
 
 const initialState: LoginState = {
-    value: false,
+    value: !!(localStorage.getItem('login')),
 }
 
 export const loginSlice = createSlice({
@@ -16,13 +15,11 @@ export const loginSlice = createSlice({
         // Use the PayloadAction type to declare the contents of `action.payload`
         setLogin: (state, action: PayloadAction<boolean>) => {
             state.value = action.payload
+            localStorage.setItem('login', `${action.payload}`)
         },
     },
 })
 
 export const { setLogin } = loginSlice.actions
-
-// Other code such as selectors can use the imported `RootState` type
-export const selectLoggedIn = (state: RootState) => state.login.value
 
 export default loginSlice.reducer
