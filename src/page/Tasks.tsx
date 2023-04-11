@@ -2,10 +2,11 @@ import TaskList from "../component/TaskList";
 import {Task} from "../data/init-data";
 import {useEffect, useState} from "react";
 import './Tasks.css';
+import {useSelector} from "react-redux";
+import {RootState} from "../features/store";
 
 const Tasks = () => {
-    // TODO: 2.	Upravte zdrojový kód tak aby po stisknutí tlačítka „Přihlásit se“ v komponentně Header.tsx se aktualizoval stav i v komponentě Task.tsx a zobrazil tasky z backendu.
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const isLoggedIn = useSelector((state: RootState) => state.login.value);
 
     const [tasks, setTasks] = useState<Task[]>([]);
     const [error, setError] = useState<string | null>(null);
