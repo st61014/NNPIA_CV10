@@ -19,4 +19,14 @@ public class TaskService {
     public Iterable<Task> findAll() {
         return taskRepository.findAll();
     }
+
+    public Task findById(Long id) throws ResourceNotFoundException {
+        var result = taskRepository.findById(id);
+
+        if (result.isEmpty()) {
+            throw new ResourceNotFoundException();
+        }
+
+        return result.get();
+    }
 }
