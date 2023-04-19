@@ -4,45 +4,33 @@ import {useEffect, useState} from "react";
 import './Tasks.css';
 import {useSelector} from "react-redux";
 import {RootState} from "../features/store";
+import {useTask} from "../features/hook/hooks";
+import {useQuery} from "@tanstack/react-query";
+import {queryKey} from "@tanstack/react-query/build/lib/__tests__/utils";
+import TaskForm from "../component/TaskForm";
 
 const Tasks = () => {
-    const isLoggedIn = useSelector((state: RootState) => state.login.value);
-
-    const [tasks, setTasks] = useState<Task[]>([]);
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean | null>(false);
-
-    useEffect(() => {
-        console.log(`State changed in ${Tasks.name}: ${isLoggedIn}`);
-
-        if (isLoggedIn) {
-            setLoading(true);
-            fetchData();
-        }
-    }, [isLoggedIn]);
-
     const fetchData = async () => {
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
         let response = null;
 
-        try {
-            response = await fetch(`${backendUrl}/task`);
-        } catch (e : any) {
-            setError(e.message);
-            setTasks([]);
-        }
+        response = await fetch(`${backendUrl}/task`);
 
-        setLoading(false);
-        if (response && response.ok) {
-            const tasks = await response.json();
-            setTasks(tasks);
-        }
+        return await response.json();
     };
 
+    //const isLoggedIn = useSelector((state: RootState) => state.login.value);
+    const {isLoading, data, isError, error} = useQuery({queryKey: ['tasks'], queryFn: fetchData})
+    //const {error, loading, tasks}=useTask(isLoggedIn);
+
+    if (isLoading){
+        return <div className="alert alert-danger">loading</div>
+    }
+
     return <div className="tasks">
-        {error && <div className="alert alert-danger">{error}</div>}
-        {loading && <div className="alert alert-danger">loading</div>}
-        <TaskList tasks={tasks} />
+        {isError && <div className="alert alert-danger">{JSON.stringify(error)}</div>}
+        <TaskList tasks={data}/>
+        <TaskForm/>
     </div>
 };
 
